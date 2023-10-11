@@ -77,7 +77,8 @@ export class MovieService {
       .find(findQuery)
       .skip(size * (currentPage - 1))
       .limit(size)
-      .sort({ createdAt: sort });
+      .sort({ createdAt: sort })
+      .populate('category');
 
     return {
       response: result,
@@ -116,9 +117,11 @@ export class MovieService {
         ...requestData,
       };
 
-      const movie = await this.movieModel.findByIdAndUpdate(id, uploadUrls, {
-        new: true,
-      });
+      const movie = await this.movieModel
+        .findByIdAndUpdate(id, uploadUrls, {
+          new: true,
+        })
+        .populate('category');
 
       if (!movie) {
         throw new NotFoundException('Movie not found');
@@ -160,6 +163,7 @@ export class MovieService {
     const count = await this.movieModel.count({ isReported: true });
     const response = await this.movieModel
       .find({ isReported: true })
+      .populate('category')
       .skip(size * (currentPage - 1))
       .limit(size)
       .sort({ createdAt: sort });
@@ -215,7 +219,8 @@ export class MovieService {
       })
       .skip(size * (currentPage - 1))
       .limit(size)
-      .sort({ createdAt: sort });
+      .sort({ createdAt: sort })
+      .populate('category');
 
     return {
       response: result,

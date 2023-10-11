@@ -45,4 +45,22 @@ export class TokenService {
     await this.create({ user: currentUser._id, token: accessToken });
     return accessToken;
   }
+
+  async createOrUpdateToken(requestData: CreateTokenDto) {
+    try {
+      const existingToken = await this.tokenModel.findOne({
+        user: requestData.user,
+      });
+
+      if (existingToken) {
+        Object.assign(existingToken, requestData);
+        await existingToken.save();
+      } else {
+        await this.tokenModel.create({ ...requestData });
+      }
+    } catch (error) {
+      console.error('Error creating or updating token:', error);
+      throw error;
+    }
+  }
 }

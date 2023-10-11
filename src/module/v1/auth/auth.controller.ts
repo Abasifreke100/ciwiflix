@@ -1,4 +1,10 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { OTP_SENT } from 'src/common/constants/otp.constants';
 import { OtpEnum } from 'src/common/constants/otp.enum';
 import {
@@ -9,7 +15,7 @@ import {
 import { Public } from 'src/common/decorator/public.decorator';
 import { ResponseMessage } from 'src/common/decorator/response.decorator';
 import { OtpService } from '../otp/otp.service';
-import { CreateUserDto } from '../user/dto/create-user.dto';
+import { AuthDto, CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { CheckEmailDto, LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto, ForgotPasswordResetDto } from './dto/password.dto';
@@ -22,14 +28,14 @@ export class AuthController {
     private otpService: OtpService,
   ) {}
 
-  @Public()
-  @Post('register')
-  @ResponseMessage(USER_CREATED)
-  async register(
-    @Body() requestPayload: CreateUserDto,
-  ): Promise<IAuthResponse> {
-    return await this.authService.register(requestPayload);
-  }
+  // @Public()
+  // @Post()
+  // @ResponseMessage(USER_CREATED)
+  // async register(
+  //   @Body() requestPayload: CreateUserDto,
+  // ): Promise<IAuthResponse> {
+  //   return await this.authService.register(requestPayload);
+  // }
 
   @Public()
   @Post('login')
@@ -65,5 +71,16 @@ export class AuthController {
   async forgotPasswordReset(@Body() requestData: ForgotPasswordResetDto) {
     await this.authService.resetPassword(requestData);
     return;
+  }
+
+  @Public()
+  @ResponseMessage(LOGGED_IN)
+  @Post()
+  async auth(@Body() requestData: AuthDto) {
+    try {
+      return await this.authService.auth(requestData);
+    } catch (error) {
+      throw new UnprocessableEntityException(error.message);
+    }
   }
 }

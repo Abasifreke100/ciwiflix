@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { GenderEnum, RoleEnum } from 'src/common/constants/user.constants';
 import { CategoryEnum } from '../../../../common/constants/product.constants';
 
 export type ProductDocument = Product &

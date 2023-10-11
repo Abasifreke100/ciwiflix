@@ -439,12 +439,8 @@ export class UserService {
       }
 
       return await this.userModel.create({
-        firstName: 'Admin',
-        lastName: 'Admin',
         email: 'admin@gmail.com',
         password: await this.hashData('password'),
-        phone: '08080808080',
-        gender: GenderEnum.MALE,
         role: RoleEnum.ADMIN,
       });
     } catch (e) {

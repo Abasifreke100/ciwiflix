@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsNumber,
   IsOptional,
   IsString,
   Length,
@@ -36,6 +37,17 @@ export class CreateUserDto {
   gender: string;
 }
 
+export class AuthDto {
+  @IsString()
+  wallet_type: string;
+
+  @IsNumber()
+  balance: string;
+
+  @IsString()
+  wallet_id: string;
+}
+
 export class UserByEmailDto {
   @IsString()
   email: string;
@@ -49,4 +61,3 @@ export class TokenDto {
   @IsOptional()
   user: string;
 }
-

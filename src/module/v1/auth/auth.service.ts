@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Model } from 'mongoose';
+import { Model, Promise } from 'mongoose';
 import { OtpEnum } from 'src/common/constants/otp.enum';
 import { generateIdentifier } from 'src/common/utils/uniqueId';
 import { OtpService } from '../otp/otp.service';
@@ -116,5 +116,77 @@ export class AuthService {
       throw new BadRequestException('Could not reset password');
     }
     return updatePassword;
+  }
+
+  async auth(requestData) {
+    try {
+      const existingUser = await this.userModel.findOne({
+        wallet_id: requestData.wallet_id,
+      });
+
+      if (existingUser) {
+        return await this.loginAuth(existingUser, requestData);
+      } else {
+        return await this.regAuth(requestData);
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async loginAuth(user, requestData) {
+    const { wallet_type, wallet_id, balance } = requestData;
+
+    try {
+      const accessToken = await this.jwtService.sign({
+        _id: user._id,
+        role: user.role,
+      });
+
+      user.wallet_type = wallet_type;
+      user.wallet_id = wallet_id;
+      user.balance = balance;
+      await user.save();
+
+      await Promise.all([
+        this.tokenService.createOrUpdateToken({
+          user: user._id,
+          token: accessToken,
+        }),
+      ]);
+
+      return {
+        user,
+        accessToken,
+      };
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+  async regAuth(requestData) {
+    try {
+      const user = await this.userModel.create({
+        ...requestData,
+      });
+
+      const accessToken = this.jwtService.sign({
+        _id: user._id,
+        role: user.role,
+      });
+
+      await Promise.all([
+        this.tokenService.createOrUpdateToken({
+          user: user._id.toString(),
+          token: accessToken,
+        }),
+      ]);
+
+      return {
+        user,
+        accessToken,
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

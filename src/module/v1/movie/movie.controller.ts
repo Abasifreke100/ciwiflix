@@ -8,7 +8,8 @@ import {
   Post,
   Query,
   Req,
-  UploadedFiles, UseGuards,
+  UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ResponseMessage } from '../../../common/decorator/response.decorator';
@@ -24,20 +25,13 @@ import {
   MOVIE_UPDATED,
 } from '../../../common/constants/movie.constants';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import {JwtAuthGuard} from "../auth/guard/jwt.guard";
-import {RolesGuard} from "../auth/guard/roles.guard";
-import {RoleEnum} from "../../../common/constants/user.constants";
-import {Roles} from "../../../common/decorator/roles.decorator";
 
 @Controller('movie')
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @ResponseMessage(MOVIE_CREATED)
-  @Public()
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(RoleEnum.ADMIN)
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'thumbnail', maxCount: 1 },
@@ -60,14 +54,12 @@ export class MovieController {
   }
 
   @ResponseMessage(MOVIE_DELETED)
-  @Public()
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return await this.movieService.delete(id);
   }
 
   @ResponseMessage(MOVIE_UPDATED)
-  @Public()
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'thumbnail', maxCount: 1 },

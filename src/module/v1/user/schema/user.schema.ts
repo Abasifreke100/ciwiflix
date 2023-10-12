@@ -10,16 +10,10 @@ export type UserDocument = User &
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop({
-    unique: true,
-    trim: true,
-    lowercase: true,
-    default: null,
-    required: false,
-  })
+  @Prop()
   email: string;
 
-  @Prop({ default: null, required: false })
+  @Prop()
   phone: string;
 
   @Prop({
@@ -37,7 +31,7 @@ export class User {
   @Prop({ unique: true, trim: true })
   wallet_id: string;
 
-  @Prop({ default: null, required: false })
+  @Prop()
   wallet_type: string;
 
   @Prop({ default: 0 })

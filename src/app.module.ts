@@ -17,6 +17,7 @@ import { PaymentModule } from './module/v1/payment/payment.module';
 import { OrderModule } from './module/v1/order/order.module';
 import { CategoryModule } from './module/v1/category/category.module';
 import { MovieModule } from './module/v1/movie/movie.module';
+import { UserListModule } from './module/v1/user-list/user-list.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { MovieModule } from './module/v1/movie/movie.module';
     OrderModule,
     CategoryModule,
     MovieModule,
+    UserListModule,
   ],
   controllers: [AppController],
   providers: [AppService],

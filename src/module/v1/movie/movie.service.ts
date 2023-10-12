@@ -8,11 +8,14 @@ import { Model } from 'mongoose';
 import { Movie, MovieDocument } from './schema/movie.schema';
 import { SpacesService } from '../spaces/spaces.service';
 import { Category, CategoryDocument } from '../category/schema/category.schema';
+import { SaveMovie, SaveMovieDocument } from './schema/save-movie.schema';
 
 @Injectable()
 export class MovieService {
   constructor(
     @InjectModel(Movie.name) private movieModel: Model<MovieDocument>,
+    @InjectModel(SaveMovie.name)
+    private saveMovieModel: Model<SaveMovieDocument>,
     @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
     private spacesService: SpacesService,
   ) {}
@@ -230,5 +233,64 @@ export class MovieService {
         size,
       },
     };
+  }
+
+  async saveMovie(id, user) {
+    const existingSavedMovie = await this.saveMovieModel.findOne({
+      user: user._id,
+      movie: id,
+    });
+
+    if (existingSavedMovie) {
+      throw new BadRequestException('Video already saved');
+    }
+
+    const saveMovie = await this.saveMovieModel.create({
+      user: user._id,
+      movie: id,
+    });
+
+    return saveMovie;
+  }
+
+  async listSaveMovie(query: any, user) {
+    let { currentPage, size, sort } = query;
+
+    currentPage = Number(currentPage) ? parseInt(currentPage) : 1;
+    size = Number(size) ? parseInt(size) : 10;
+    sort = sort ? sort : 'desc';
+
+    delete query.currentPage;
+    delete query.size;
+    delete query.sort;
+
+    const count = await this.saveMovieModel.count({ user: user._id });
+    const response = await this.saveMovieModel
+      .find({ user: user._id })
+      .populate('movie')
+      .skip(size * (currentPage - 1))
+      .limit(size)
+      .sort({ createdAt: sort });
+
+    return {
+      response,
+      pagination: {
+        total: count,
+        currentPage,
+        size,
+      },
+    };
+  }
+
+  async removeSaveMovie(id) {
+    const savedMovie = await this.saveMovieModel.findByIdAndDelete({
+      _id: id,
+    });
+
+    if (!savedMovie) {
+      throw new NotFoundException('Movie not found');
+    }
+
+    return;
   }
 }

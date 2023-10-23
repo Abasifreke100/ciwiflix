@@ -293,4 +293,38 @@ export class MovieService {
 
     return;
   }
+
+  async getByParentalGuide(query: any, req) {
+    let { currentPage, size, sort } = query;
+
+    currentPage = Number(currentPage) ? parseInt(currentPage) : 1;
+    size = Number(size) ? parseInt(size) : 10;
+    sort = sort ? sort : 'desc';
+
+    // Check if the parentalGuide query parameter is present
+    const parentalGuideFilter = req.query.parentalGuide || null;
+
+    // Create a filter object to conditionally filter by parentalGuide
+    const filter = parentalGuideFilter
+      ? { parentalGuide: parentalGuideFilter }
+      : {};
+
+    const count = await this.movieModel.countDocuments(filter);
+
+    const result = await this.movieModel
+      .find(filter)
+      .skip(size * (currentPage - 1))
+      .limit(size)
+      .sort({ createdAt: sort })
+      .populate('category');
+
+    return {
+      response: result,
+      pagination: {
+        total: count,
+        currentPage,
+        size,
+      },
+    };
+  }
 }

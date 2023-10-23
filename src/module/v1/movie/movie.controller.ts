@@ -117,4 +117,11 @@ export class MovieController {
   async removeSaveMovie(@Param('id') id: string) {
     return await this.movieService.removeSaveMovie(id);
   }
+
+  @ResponseMessage(MOVIE_FETCH)
+  @Public()
+  @Get('parental-guide')
+  async getByParentalGuide(@Query() query, @Req() req) {
+    return await this.movieService.getByParentalGuide(query, req);
+  }
 }

@@ -28,6 +28,9 @@ export class Movie {
   @Prop()
   feedback: string;
 
+  @Prop()
+  parentalGuide: number;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Category.name })
   category?: Category;
 }

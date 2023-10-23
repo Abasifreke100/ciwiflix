@@ -19,6 +19,9 @@ export class Movie {
   @Prop()
   thumbnail: string;
 
+  @Prop()
+  subTitle: string;
+
   @Prop({ required: true })
   video: string;
 
@@ -30,6 +33,9 @@ export class Movie {
 
   @Prop()
   parentalGuide: number;
+
+  @Prop({ default: 0 })
+  viewCount: number;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Category.name })
   category?: Category;

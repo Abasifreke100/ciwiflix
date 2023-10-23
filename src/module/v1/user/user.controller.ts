@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  Query,
+  Query, Req,
   Request,
   Res,
   UploadedFile,
@@ -24,16 +24,11 @@ import {
   ADMIN_SEEDER,
   LOGGED_OUT,
   PASSWORD_UPDATED,
-  RoleEnum,
+  RoleEnum, USER_UPDATE_PARENTAL_GUIDE,
   USER_UPDATED,
 } from '../../../common/constants/user.constants';
 import { ResponseMessage } from '../../../common/decorator/response.decorator';
 import { Roles } from '../../../common/decorator/roles.decorator';
-import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  ILoggedInUser,
-  LoggedInUser,
-} from '../../../common/decorator/user.decorator';
 import { Public } from '../../../common/decorator/public.decorator';
 
 @Controller('user')
@@ -106,5 +101,11 @@ export class UserController {
   @Roles(RoleEnum.ADMIN)
   async updateSpecific(@Body() updateUserDto: UpdateUserDto, @Request() req) {
     return await this.userService.update(updateUserDto._id, updateUserDto);
+  }
+
+  @ResponseMessage(USER_UPDATE_PARENTAL_GUIDE)
+  @Patch('/update/parental/guide')
+  async setUserParentalGuide(@Body() requestData, @Req() req) {
+    return await this.userService.setUserParentalGuide(requestData, req.user);
   }
 }

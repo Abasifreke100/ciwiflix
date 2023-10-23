@@ -32,6 +32,9 @@ export class User {
   wallet_id: string;
 
   @Prop()
+  parentalGuide: boolean;
+
+  @Prop()
   wallet_type: string;
 
   @Prop({ default: 0 })

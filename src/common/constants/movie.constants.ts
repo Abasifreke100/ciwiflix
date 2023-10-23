@@ -5,6 +5,7 @@ export const MOVIE_DELETED = 'Movie deleted successfully';
 export const MOVIE_REPORT = 'Movie reported successfully';
 export const MOVIE_SAVE = 'Movie saved successfully';
 export const MOVIE_REMOVED = 'Movie removed successfully';
+export const MOVIE_VIEWED = 'Movie viewed successfully';
 
 /** UserList **/
 export const ADD_TO_LIST = 'List created successfully';

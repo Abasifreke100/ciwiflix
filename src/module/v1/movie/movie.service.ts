@@ -267,7 +267,12 @@ export class MovieService {
     const count = await this.saveMovieModel.count({ user: user._id });
     const response = await this.saveMovieModel
       .find({ user: user._id })
-      .populate('movie')
+      .populate({
+        path: 'movie',
+        populate: {
+          path: 'category',
+        },
+      })
       .skip(size * (currentPage - 1))
       .limit(size)
       .sort({ createdAt: sort });

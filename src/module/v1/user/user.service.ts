@@ -16,6 +16,7 @@ import { QueryDto } from './dto/query.dto';
 import { TokenService } from '../token/token.service';
 import { SpacesService } from '../spaces/spaces.service';
 import { GenderEnum, RoleEnum } from '../../../common/constants/user.constants';
+import { use } from 'passport';
 
 @Injectable()
 export class UserService {
@@ -445,6 +446,21 @@ export class UserService {
       });
     } catch (e) {
       throw new BadRequestException(e.message);
+    }
+  }
+
+  async setUserParentalGuide(requestData, user) {
+    try {
+      console.log(user._id);
+      const updatedUser = await this.userModel.findByIdAndUpdate(
+        user._id,
+        { parentalGuide: requestData.parentalGuide },
+        { new: true },
+      );
+
+      return updatedUser;
+    } catch (error) {
+      throw error.message;
     }
   }
 }

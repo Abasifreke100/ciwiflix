@@ -1,5 +1,6 @@
 export const USER_CREATED = 'User Created';
 export const USER_UPDATED = 'User Updated';
+export const USER_UPDATE_PARENTAL_GUIDE = 'User Parental Guide Updated';
 export const USER_DELETED = 'User Deleted';
 export const ADMIN_SEEDER = 'Admin Seeded Successfully';
 export const LOGGED_IN = 'User successfully logged in';

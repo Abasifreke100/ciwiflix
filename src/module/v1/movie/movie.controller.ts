@@ -23,6 +23,7 @@ import {
   MOVIE_REPORT,
   MOVIE_SAVE,
   MOVIE_UPDATED,
+  MOVIE_VIEWED,
 } from '../../../common/constants/movie.constants';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
@@ -36,12 +37,17 @@ export class MovieController {
     FileFieldsInterceptor([
       { name: 'thumbnail', maxCount: 1 },
       { name: 'video', maxCount: 1 },
+      { name: 'subTitle', maxCount: 1 },
     ]),
   )
   async create(
     @Body() requestData,
     @UploadedFiles()
-    files: { thumbnail?: Express.Multer.File[]; video?: Express.Multer.File[] },
+    files: {
+      thumbnail?: Express.Multer.File[];
+      video?: Express.Multer.File[];
+      subTitle?: Express.Multer.File[];
+    },
   ) {
     return await this.movieService.create(requestData, files);
   }
@@ -64,6 +70,7 @@ export class MovieController {
     FileFieldsInterceptor([
       { name: 'thumbnail', maxCount: 1 },
       { name: 'video', maxCount: 1 },
+      { name: 'subTitle', maxCount: 1 },
     ]),
   )
   @Patch(':id')
@@ -74,6 +81,7 @@ export class MovieController {
     files: {
       thumbnail?: Express.Multer.File[];
       video?: Express.Multer.File[];
+      subTitle?: Express.Multer.File[];
     },
   ) {
     return await this.movieService.update(id, requestData, files);
@@ -119,9 +127,15 @@ export class MovieController {
   }
 
   @ResponseMessage(MOVIE_FETCH)
-  @Public()
   @Get('parental-guide')
-  async getByParentalGuide(@Query() query, @Req() req) {
-    return await this.movieService.getByParentalGuide(query, req);
+  async getMovieByParentalGuide(@Query() query, @Req() req) {
+    return await this.movieService.getMovieByParentalGuide(query, req.user);
+  }
+
+  @ResponseMessage(MOVIE_VIEWED)
+  @Public()
+  @Patch('update/view/count/:id')
+  async updateViewMovieCount(@Param('id') id: string) {
+    return await this.movieService.updateViewMovieCount(id);
   }
 }

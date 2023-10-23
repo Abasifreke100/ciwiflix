@@ -21,16 +21,20 @@ export class MovieService {
   ) {}
 
   async create(requestData, files = null) {
-    const [thumbnailUrl, videoUrl] = await Promise.all([
+    const [thumbnailUrl, videoUrl, subTitleUrl] = await Promise.all([
       this.spacesService.uploadFile(
         files?.thumbnail?.length > 0 && files.thumbnail[0],
       ),
       this.spacesService.uploadFile(files?.video?.length > 0 && files.video[0]),
+      this.spacesService.uploadFile(
+        files?.subTitle?.length > 0 && files.subTitle[0],
+      ),
     ]);
 
     const uploadUrls = {
       thumbnail: thumbnailUrl,
       video: videoUrl,
+      subTitle: subTitleUrl,
     };
 
     const data = { ...requestData, ...uploadUrls };
@@ -113,10 +117,14 @@ export class MovieService {
       const videoUrl = files?.video
         ? await this.spacesService.uploadFile(files.video[0])
         : undefined;
+      const subTitleUrl = files?.subTitle
+        ? await this.spacesService.uploadFile(files.subTitle[0])
+        : undefined;
 
       const uploadUrls = {
         ...(thumbnailUrl && { thumbnail: thumbnailUrl }),
         ...(videoUrl && { video: videoUrl }),
+        ...(subTitleUrl && { subTitle: subTitleUrl }),
         ...requestData,
       };
 
@@ -299,20 +307,15 @@ export class MovieService {
     return;
   }
 
-  async getByParentalGuide(query: any, req) {
+  async getMovieByParentalGuide(query, user) {
     let { currentPage, size, sort } = query;
 
     currentPage = Number(currentPage) ? parseInt(currentPage) : 1;
     size = Number(size) ? parseInt(size) : 10;
     sort = sort ? sort : 'desc';
 
-    // Check if the parentalGuide query parameter is present
-    const parentalGuideFilter = req.query.parentalGuide || null;
-
-    // Create a filter object to conditionally filter by parentalGuide
-    const filter = parentalGuideFilter
-      ? { parentalGuide: parentalGuideFilter }
-      : {};
+    // Determine the filter based on the user's parentalGuide setting
+    const filter = user.parentalGuide ? { parentalGuide: { $lt: 18 } } : {};
 
     const count = await this.movieModel.countDocuments(filter);
 
@@ -331,5 +334,19 @@ export class MovieService {
         size,
       },
     };
+  }
+
+  async updateViewMovieCount(id) {
+    try {
+      const movie = await this.movieModel.findByIdAndUpdate(
+        id,
+        { $inc: { viewCount: 1 } },
+        { new: true },
+      );
+
+      return movie;
+    } catch (error) {
+      throw error.message;
+    }
   }
 }

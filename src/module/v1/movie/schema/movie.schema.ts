@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { Category } from '../../category/schema/category.schema';
+import { SubCategory } from '../../category/schema/sub-category.schema';
 
 export type MovieDocument = Movie &
   Document & {
@@ -37,8 +37,8 @@ export class Movie {
   @Prop({ default: 0 })
   viewCount: number;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Category.name })
-  category?: Category;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: SubCategory.name })
+  subCategory?: SubCategory;
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);

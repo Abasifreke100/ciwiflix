@@ -7,8 +7,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Movie, MovieDocument } from './schema/movie.schema';
 import { SpacesService } from '../spaces/spaces.service';
-import { Category, CategoryDocument } from '../category/schema/category.schema';
 import { SaveMovie, SaveMovieDocument } from './schema/save-movie.schema';
+import {
+  SubCategory,
+  SubCategoryDocument,
+} from '../category/schema/sub-category.schema';
 
 @Injectable()
 export class MovieService {
@@ -16,7 +19,8 @@ export class MovieService {
     @InjectModel(Movie.name) private movieModel: Model<MovieDocument>,
     @InjectModel(SaveMovie.name)
     private saveMovieModel: Model<SaveMovieDocument>,
-    @InjectModel(Category.name) private categoryModel: Model<CategoryDocument>,
+    @InjectModel(SubCategory.name)
+    private subCategoryModel: Model<SubCategoryDocument>,
     private spacesService: SpacesService,
   ) {}
 
@@ -57,7 +61,7 @@ export class MovieService {
     let findQuery = {};
 
     if (categoryFilter) {
-      const matchingCategory = await this.categoryModel.findOne({
+      const matchingCategory = await this.subCategoryModel.findOne({
         name: categoryFilter,
       });
 
@@ -74,7 +78,7 @@ export class MovieService {
 
       const categoryId = matchingCategory._id;
       findQuery = {
-        category: categoryId,
+        subCategory: categoryId,
       };
     }
 
@@ -85,7 +89,16 @@ export class MovieService {
       .skip(size * (currentPage - 1))
       .limit(size)
       .sort({ createdAt: sort })
-      .populate('category');
+      .populate({
+        path: 'subCategory',
+        model: 'SubCategory',
+        select: '-updatedAt -createdAt -__v -limit',
+        populate: {
+          path: 'category',
+          model: 'Category',
+          select: '-updatedAt -createdAt -__v -limit',
+        },
+      });
 
     return {
       response: result,
@@ -132,7 +145,16 @@ export class MovieService {
         .findByIdAndUpdate(id, uploadUrls, {
           new: true,
         })
-        .populate('category');
+        .populate({
+          path: 'subCategory',
+          model: 'SubCategory',
+          select: '-updatedAt -createdAt -__v -limit',
+          populate: {
+            path: 'category',
+            model: 'Category',
+            select: '-updatedAt -createdAt -__v -limit',
+          },
+        });
 
       if (!movie) {
         throw new NotFoundException('Movie not found');
@@ -174,9 +196,18 @@ export class MovieService {
     const count = await this.movieModel.count({ isReported: true });
     const response = await this.movieModel
       .find({ isReported: true })
-      .populate('category')
       .skip(size * (currentPage - 1))
       .limit(size)
+      .populate({
+        path: 'subCategory',
+        model: 'SubCategory',
+        select: '-updatedAt -createdAt -__v -limit',
+        populate: {
+          path: 'category',
+          model: 'Category',
+          select: '-updatedAt -createdAt -__v -limit',
+        },
+      })
       .sort({ createdAt: sort });
 
     return {
@@ -200,7 +231,7 @@ export class MovieService {
     let categoryId;
 
     if (categoryFilter) {
-      const matchingCategory = await this.categoryModel.findOne({
+      const matchingCategory = await this.subCategoryModel.findOne({
         name: categoryFilter,
       });
 
@@ -231,7 +262,16 @@ export class MovieService {
       .skip(size * (currentPage - 1))
       .limit(size)
       .sort({ createdAt: sort })
-      .populate('category');
+      .populate({
+        path: 'subCategory',
+        model: 'SubCategory',
+        select: '-updatedAt -createdAt -__v -limit',
+        populate: {
+          path: 'category',
+          model: 'Category',
+          select: '-updatedAt -createdAt -__v -limit',
+        },
+      });
 
     return {
       response: result,
@@ -258,6 +298,10 @@ export class MovieService {
       movie: id,
     });
 
+    if (!saveMovie) {
+      throw new BadRequestException('Something when wrong');
+    }
+
     return saveMovie;
   }
 
@@ -278,7 +322,14 @@ export class MovieService {
       .populate({
         path: 'movie',
         populate: {
-          path: 'category',
+          path: 'subCategory',
+          model: 'SubCategory',
+          select: '-updatedAt -createdAt -__v -limit',
+          populate: {
+            path: 'category',
+            model: 'Category',
+            select: '-updatedAt -createdAt -__v -limit',
+          },
         },
       })
       .skip(size * (currentPage - 1))
@@ -294,7 +345,6 @@ export class MovieService {
       },
     };
   }
-
   async removeSaveMovie(id) {
     const savedMovie = await this.saveMovieModel.findByIdAndDelete({
       _id: id,
@@ -324,7 +374,16 @@ export class MovieService {
       .skip(size * (currentPage - 1))
       .limit(size)
       .sort({ createdAt: sort })
-      .populate('category');
+      .populate({
+        path: 'subCategory',
+        model: 'SubCategory',
+        select: '-updatedAt -createdAt -__v -limit',
+        populate: {
+          path: 'category',
+          model: 'Category',
+          select: '-updatedAt -createdAt -__v -limit',
+        },
+      });
 
     return {
       response: result,
@@ -343,6 +402,10 @@ export class MovieService {
         { $inc: { viewCount: 1 } },
         { new: true },
       );
+
+      if (!movie) {
+        throw new NotFoundException('Movie not found');
+      }
 
       return movie;
     } catch (error) {

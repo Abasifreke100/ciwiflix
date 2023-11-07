@@ -4,14 +4,17 @@ import { MovieService } from './movie.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Movie, MovieSchema } from './schema/movie.schema';
 import { SpacesModule } from '../spaces/spaces.module';
-import { Category, CategorySchema } from '../category/schema/category.schema';
 import { SaveMovie, SaveMovieSchema } from './schema/save-movie.schema';
+import {
+  SubCategory,
+  SubCategorySchema,
+} from '../category/schema/sub-category.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Movie.name, schema: MovieSchema },
-      { name: Category.name, schema: CategorySchema },
+      { name: SubCategory.name, schema: SubCategorySchema },
       { name: SaveMovie.name, schema: SaveMovieSchema },
     ]),
     SpacesModule,

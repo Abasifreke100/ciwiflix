@@ -451,12 +451,15 @@ export class UserService {
 
   async setUserParentalGuide(requestData, user) {
     try {
-      console.log(user._id);
       const updatedUser = await this.userModel.findByIdAndUpdate(
         user._id,
         { parentalGuide: requestData.parentalGuide },
         { new: true },
       );
+
+      if (!updatedUser) {
+        throw new BadRequestException('Something when wrong');
+      }
 
       return updatedUser;
     } catch (error) {

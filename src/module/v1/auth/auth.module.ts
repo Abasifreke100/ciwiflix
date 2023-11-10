@@ -1,4 +1,3 @@
-import { RolesGuard } from './guard/roles.guard';
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
@@ -14,7 +13,6 @@ import { OtpModule } from '../otp/otp.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../user/schema/user.schema';
 import { TokenModule } from '../token/token.module';
-import { Cart, CartSchema } from '../cart/schema/cart.schema';
 
 @Module({
   imports: [
@@ -24,7 +22,6 @@ import { Cart, CartSchema } from '../cart/schema/cart.schema';
     TokenModule,
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
-      { name: Cart.name, schema: CartSchema },
     ]),
     {
       ...JwtModule.register({

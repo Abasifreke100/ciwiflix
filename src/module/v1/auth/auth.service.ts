@@ -19,7 +19,6 @@ import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordResetDto } from './dto/password.dto';
 import { IAuthResponse } from './interface/auth.interface';
 import { RoleEnum } from '../../../common/constants/user.constants';
-import { Cart, CartDocument } from '../cart/schema/cart.schema';
 import { ExtractJwt } from 'passport-jwt';
 import fromAuthHeaderWithScheme = ExtractJwt.fromAuthHeaderWithScheme;
 
@@ -27,7 +26,6 @@ import fromAuthHeaderWithScheme = ExtractJwt.fromAuthHeaderWithScheme;
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    @InjectModel(Cart.name) private cartModel: Model<CartDocument>,
     private userService: UserService,
     private otpService: OtpService,
     private jwtService: JwtService,
@@ -51,10 +49,6 @@ export class AuthService {
       _id: user._id,
       role: user.role,
       generator: generateIdentifier(),
-    });
-
-    await this.cartModel.create({
-      user: user._id,
     });
 
     await this.tokenService.create({ user: user._id, token: accessToken });

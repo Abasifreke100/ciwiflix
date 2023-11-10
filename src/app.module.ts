@@ -11,10 +11,6 @@ import { TokenModule } from './module/v1/token/token.module';
 import { UserModule } from './module/v1/user/user.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
-import { ProductModule } from './module/v1/product/product.module';
-import { CartModule } from './module/v1/cart/cart.module';
-import { PaymentModule } from './module/v1/payment/payment.module';
-import { OrderModule } from './module/v1/order/order.module';
 import { CategoryModule } from './module/v1/category/category.module';
 import { MovieModule } from './module/v1/movie/movie.module';
 import { UserListModule } from './module/v1/user-list/user-list.module';
@@ -39,10 +35,6 @@ import { UserListModule } from './module/v1/user-list/user-list.module';
     OtpModule,
     MailModule,
     TokenModule,
-    ProductModule,
-    CartModule,
-    PaymentModule,
-    OrderModule,
     CategoryModule,
     MovieModule,
     UserListModule,

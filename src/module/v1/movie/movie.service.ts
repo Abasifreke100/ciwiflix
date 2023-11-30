@@ -29,7 +29,9 @@ export class MovieService {
       this.spacesService.uploadFile(
         files?.thumbnail?.length > 0 && files.thumbnail[0],
       ),
-      this.spacesService.uploadFile(files?.video?.length > 0 && files.video[0]),
+      this.spacesService.uploadFiles(
+        files?.video?.length > 0 && files.video[0],
+      ),
       this.spacesService.uploadFile(
         files?.subTitle?.length > 0 && files.subTitle[0],
       ),
@@ -43,6 +45,7 @@ export class MovieService {
 
     const data = { ...requestData, ...uploadUrls };
     try {
+      console.log(uploadUrls);
       return await this.movieModel.create(data);
     } catch (e) {
       throw new Error(e.message);

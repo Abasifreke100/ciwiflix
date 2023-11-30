@@ -26,6 +26,8 @@ import {
   MOVIE_VIEWED,
 } from '../../../common/constants/movie.constants';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+// import { Multer } from 'multer';
+import * as Multer from 'multer';
 
 @Controller('movie')
 export class MovieController {

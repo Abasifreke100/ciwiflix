@@ -5,9 +5,9 @@
   "author": "",
   "private": true,
   "license": "MIT",
-    "engines": {
-      "node": "18.x || 20.x"
-    },
+  "engines": {
+    "node": "18.x || 20.x"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -24,6 +24,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.462.0",
+    "@aws-sdk/lib-storage": "^3.461.0",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/axios": "^0.1.0",
     "@nestjs/common": "^9.0.0",
@@ -37,11 +39,16 @@
     "@nestjs/schedule": "^2.2.0",
     "@nestjs/throttler": "^4.0.0",
     "@sendgrid/mail": "^7.7.0",
+    "@types/connect-timeout": "^0.0.39",
     "@types/csurf": "^1.11.2",
-    "aws-sdk": "^2.1382.0",
+    "aws-sdk": "^2.1506.0",
     "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "compression": "^1.7.4",
+    "connect-timeout": "^1.9.0",
     "csurf": "^1.11.0",
     "dotenv": "^16.0.3",
     "helmet": "^6.0.1",
@@ -58,7 +65,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "sib-api-v3-sdk": "^8.4.2",
-    "bcrypt": "^5.1.0"
+    "timeout": "^0.2.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

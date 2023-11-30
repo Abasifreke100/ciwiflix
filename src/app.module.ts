@@ -14,10 +14,16 @@ import { AppController } from './app.controller';
 import { CategoryModule } from './module/v1/category/category.module';
 import { MovieModule } from './module/v1/movie/movie.module';
 import { UserListModule } from './module/v1/user-list/user-list.module';
+// import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // MulterModule.register({
+    //   limits: {
+    //     fileSize: 1024 * 1024 * 500, // Adjust the limit value as needed (400MB in this case)
+    //   },
+    // }),
     ThrottlerModule.forRoot({
       ttl: 5, //seconds
       limit: 1,

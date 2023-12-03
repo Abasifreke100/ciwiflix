@@ -45,7 +45,6 @@ export class MovieService {
 
     const data = { ...requestData, ...uploadUrls };
     try {
-      console.log(uploadUrls);
       return await this.movieModel.create(data);
     } catch (e) {
       throw new Error(e.message);

@@ -108,4 +108,5 @@ export class UserController {
   async setUserParentalGuide(@Body() requestData, @Req() req) {
     return await this.userService.setUserParentalGuide(requestData, req.user);
   }
+
 }

@@ -20,9 +20,7 @@ import { TokenModule } from '../token/token.module';
     OtpModule,
     PassportModule,
     TokenModule,
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-    ]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     {
       ...JwtModule.register({
         secret: environment.JWT.SECRET,

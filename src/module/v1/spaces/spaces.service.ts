@@ -140,7 +140,7 @@ export class SpacesService {
 
     try {
       // Directly upload if the file is small
-      const partSize = 5 * 1024 * 1024;
+      const partSize = 3 * 1024 * 1024;
       if (file.buffer.length <= partSize) {
         console.log(
           'File size is smaller than the minimum part size. Using regular upload.',
@@ -189,7 +189,7 @@ export class SpacesService {
 
       // Step 2: Determine part size and calculate number of parts
       // const partSize = 3 * 1024 * 1024; // 3 MB part size (adjust as needed)
-      const partSize = fileBuffer.length; // 3 MB part size (adjust as needed)
+      const partSize = fileBuffer.length;
       const totalParts = Math.ceil(fileBuffer.length / partSize);
 
       // // Step 3: Upload parts in parallel
